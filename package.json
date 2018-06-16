@@ -1,6 +1,6 @@
 {
 	"name": "node-peerjs",
-	"version": "0.2.0",
+	"version": "1.0.0",
 	"description": "PeerJS server component",
 	"main": "module.js",
 	"dependencies": {
@@ -15,7 +15,7 @@
 	"devDependencies": {},
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/alex2844/peerjs-server.git"
+		"url": "git://github.com/alex2844/node-peerjs.git"
 	},
 	"contributors": [
 		{

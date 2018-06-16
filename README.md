@@ -6,7 +6,7 @@ PeerServer helps broker connections between PeerJS clients.
 
 Create server:
 ```javascript
-var peer = require('./').PeerServer()
+var peer = require('node-peerjs').PeerServer()
 		.on('connection', console.log.bind(console, 'connection'))
 		.on('disconnect', console.log.bind(console, 'disconnect'));
 ```
@@ -17,7 +17,20 @@ Connecting to the server from PeerJS:
 ```
 If you prefer to use a cloud hosted PeerServer instead of running your own:
 ```javascript
-new Peer('someid', {host: 'peerjs.com', port: 9000})
+new Peer('IdUser', {host: 'peerjs.com', port: 9000})
+```
+Create room
+```javascript
+var room = Peer.Room('IdRoom', {name: 'User 1'})
+		.on('data', console.log.bind(console, 'data'))
+		.on('join', console.log.bind(console, 'join'))
+		.on('left', console.log.bind(console, 'left'))
+		.on('list', console.log.bind(console, 'list'))
+		.on('error', console.error.bind(console, 'error'));
+```
+Send data to peer(s)
+```javascript
+(peer|room).send('data');
 ```
 Config nginx proxy:
 ```nginx

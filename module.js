@@ -4,7 +4,8 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	WebSocketServer = require('ws').Server,
 	url = require('url'),
-	cors = require('cors');
+	cors = require('cors'),
+	fs = require('fs');
 
 exports = module.exports = {
 	_cache: null,
@@ -132,7 +133,10 @@ exports = module.exports = {
 						get.on('data', function(chunk) {
 							module.exports._cache += chunk;
 						}).on('end', function() {
-							res.end((module.exports._cache = module.exports._cache.replace('CLOUD_HOST:"0.peerjs.com"', 'CLOUD_HOST:location.hostname').replace('CLOUD_PORT:9e3', 'CLOUD_PORT:8008')));
+							fs.readFile('room.min.js', 'utf8', function(err, chunk) {
+								module.exports._cache += chunk;
+								res.end((module.exports._cache = module.exports._cache.replace('CLOUD_HOST:"0.peerjs.com"', 'CLOUD_HOST:location.hostname').replace('CLOUD_PORT:9e3', 'CLOUD_PORT:8008')));
+							});
 						});
 					});
 			});
