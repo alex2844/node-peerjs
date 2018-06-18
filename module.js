@@ -110,7 +110,7 @@ exports = module.exports = {
 			var self = this;
 			this.use(cors());
 			this.get('/', function(req, res, next) {
-				var d = require('../package.json');
+				var d = require('./package.json');
 				res.send({
 					name: d.name,
 					description: d.description,
@@ -128,16 +128,44 @@ exports = module.exports = {
 				if (module.exports._cache)
 					res.end(module.exports._cache);
 				else
-					https.get('https://raw.githubusercontent.com/peers/peerjs/master/dist/peer.min.js', function(get) {
-						module.exports._cache = '';
-						get.on('data', function(chunk) {
-							module.exports._cache += chunk;
-						}).on('end', function() {
-							fs.readFile('room.min.js', 'utf8', function(err, chunk) {
-								module.exports._cache += chunk;
-								res.end((module.exports._cache = module.exports._cache.replace('CLOUD_HOST:"0.peerjs.com"', 'CLOUD_HOST:location.hostname').replace('CLOUD_PORT:9e3', 'CLOUD_PORT:8008')));
+					fs.exists('lib.js', function(exists) {
+						if (exists)
+							fs.readFile('lib.js', 'utf8', function(err, chunk) {
+								res.end((module.exports._cache = chunk));
 							});
-						});
+						else{
+							https.get('https://raw.githubusercontent.com/peers/peerjs/master/dist/peer.min.js', function(get) {
+								var d = require('./package.json');
+								var v,
+									body = '';
+								get.on('data', function(chunk) {
+									body += chunk;
+								}).on('end', function() {
+									fs.readFile('room.js', 'utf8', function(err, chunk) {
+										var req = https.request({
+											host: 'closure-compiler.appspot.com',
+											path: '/compile',
+											method: 'POST',
+											headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+										}, function(get) {
+											module.exports._cache = '';
+											get.setEncoding('utf8');
+											get.on('data', function(chunk) {
+												module.exports._cache += chunk;
+											}).on('end', function() {
+												fs.writeFile('lib.js', (module.exports._cache = module.exports._cache.replace(/\n/g, ' ')), function() {
+													res.end(module.exports._cache);
+												});
+											});
+										});
+										req.end('output_info=compiled_code&js_code='+encodeURIComponent(body.replace('CLOUD_HOST:"0.peerjs.com"', 'CLOUD_HOST:location.hostname').replace('CLOUD_PORT:9e3', 'CLOUD_PORT:8008').replace(/\/\*(.*)\*\//g, function(s) {
+											v = s.split(':')[1].split(',')[0];
+											return '';
+										})+chunk+"Peer.version={'node-peer': '"+d.version+"', peerjs: '"+v+"'}"));
+									});
+								});
+							});
+						}
 					});
 			});
 			this.get('/:key/id', function(req, res, next) { // Retrieve guaranteed random ID.

@@ -22,6 +22,7 @@ new Peer('IdUser', {host: 'peerjs.com', port: 9000})
 Create room
 ```javascript
 var room = Peer.Room('IdRoom', {name: 'User 1'})
+		.on('server', console.log.bind(console, 'server'))
 		.on('data', console.log.bind(console, 'data'))
 		.on('join', console.log.bind(console, 'join'))
 		.on('left', console.log.bind(console, 'left'))

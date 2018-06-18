@@ -115,6 +115,11 @@ Peer.Room = Object.assign(function(roomid, options) {
 				_this.createClient((_this.server = null));
 		});
 		this.server.on('open', function() {
+			_this.event('server', {
+				id: _this.server.id,
+				host: _this.server.options.host,
+				port: _this.server.options.port
+			});
 			_this.createClient();
 			_this.server.on('connection', function(conn) {
 				_this.connToClients[conn.peer] = conn;
@@ -202,9 +207,7 @@ Peer.Room = Object.assign(function(roomid, options) {
 			}
 			_this.event('list', _this.list);
 		});
-		this.connToServer.on('close', function() {
-			_this.createServer();
-		});
+		this.connToServer.on('close', _this.createServer.bind(_this));
 	},
 	refreshMembers: function(_this) {
 		_this.connToServer.send({
