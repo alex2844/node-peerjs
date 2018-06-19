@@ -12,7 +12,7 @@ var peer = require('node-peerjs').PeerServer()
 ```
 Connecting to the server from PeerJS:
 ```html
-<script src='http://localhost:8008/peerjs/lib'></script>
+<script src='http://localhost:8008/peerjs/lib.js'></script>
 <script>var peer = new Peer().on('open', console.log.bind(console, 'open'));</script>
 ```
 If you prefer to use a cloud hosted PeerServer instead of running your own:

@@ -119,9 +119,9 @@ exports = module.exports = {
 				});
 			});
 			this.get('/debug', function(req, res, next) {
-				res.send("<script src='http://localhost:8008/peerjs/lib'></script><script>var peer = new Peer().on('open', console.log.bind(console, 'open'));</script>");
+				res.send("<script src='http://localhost:8008/peerjs/lib.js'></script><script>var peer = new Peer().on('open', console.log.bind(console, 'open'));</script>");
 			});
-			this.get('/:key/lib', function(req, res, next) {
+			this.get('/:key/lib.js', function(req, res, next) {
 				res.writeHead(200, {
 					'Content-Type': 'application/javascript',
 					'Cache-Control': 'max-age=3600'
