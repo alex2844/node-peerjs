@@ -17,7 +17,7 @@ Peer.Room = Object.assign(function(roomid, options) {
 		MEMBERS_REQ: 9,
 		MEMBERS_REP: 10,
 	},
-	_events: null,
+	_events: {},
 	event: Peer.prototype.emit,
 	on: Peer.prototype.on,
 	off: Peer.prototype.off,
