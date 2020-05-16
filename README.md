@@ -15,6 +15,10 @@ Connecting to the server from PeerJS:
 <script src='http://localhost:8008/peerjs/lib.js'></script>
 <script>var peer = new Peer().on('open', console.log.bind(console, 'open'));</script>
 ```
+CDN
+```html
+<script src='https://alex2844.github.io/node-peerjs/dist/peerjs.js'></script>
+```
 If you prefer to use a cloud hosted PeerServer instead of running your own:
 ```javascript
 new Peer('IdUser', {host: 'peerjs.com', port: 9000})
