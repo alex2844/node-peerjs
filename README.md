@@ -31,7 +31,21 @@ var room = Peer.Room('IdRoom', {name: 'User 1'})
 ```
 Send data to peer(s)
 ```javascript
-(peer|room).send('data');
+peer.send('data');
+room.send('data' [, id ]);
+```
+Fetch
+```javascript
+Peer.Fetch('https://api.qwedl.com/ip.php', {
+    init: {
+        secure: true,
+        host: '0.peerjs.com',
+        port: 443
+    }
+}).then(res => {
+    console.log(res);
+    res.json().then(console.log.bind(console));
+});
 ```
 Config nginx proxy:
 ```nginx
