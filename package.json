@@ -1,6 +1,6 @@
 {
 	"name": "node-peerjs",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "PeerJS server component",
 	"main": "src/module.js",
 	"dependencies": {

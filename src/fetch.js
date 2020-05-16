@@ -80,12 +80,18 @@ Peer.Fetch = Object.assign((url, options, l) => {
 	}),
 	init: options => new Promise((res, rej) => {
 		if (Peer.fetch_)
-			res(Peer.Fetch)
+			res({
+				room: Peer.fetch_,
+				fetch: Peer.Fetch
+			});
 		else{
 			let timer = setTimeout(() => rej(), 5000);
 			Peer.fetch_ = Peer.Room('fetch', options)
 			.on('error', e => (clearTimeout(timer), rej(e)))
-			.on('join', e => (clearTimeout(timer), res(Peer.Fetch)))
+			.on('join', e => (clearTimeout(timer), res({
+				room: Peer.fetch_,
+				fetch: Peer.Fetch
+			})))
 			.on('data', e => {
 				let cache = (localStorage.peerFetchCache ? JSON.parse(localStorage.peerFetchCache) : {});
 				if ((e.id != 'me') && cache[e.data.hash]) {
