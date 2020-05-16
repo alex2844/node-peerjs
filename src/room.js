@@ -46,6 +46,7 @@ Peer.Room = Object.assign(function(roomid, options) {
 						type: _this.MSG_TYPE.BROADCAST,
 						peerid: data.peerid,
 						peername: data.peername,
+						to: data.to,
 						data: data.data,
 					});
 					break;
@@ -97,12 +98,14 @@ Peer.Room = Object.assign(function(roomid, options) {
 	},
 	broadcast: function(data) {
 		for (var id in this.connToClients) {
-			this.connToClients[id].send({
-				type: data.type,
-				peerid: data.peerid,
-				peername: data.peername,
-				data: data.data
-			});
+			if (!data.to || (data.to == id) || (data.peerid == id))
+				this.connToClients[id].send({
+					type: data.type,
+					peerid: data.peerid,
+					peername: data.peername,
+					to: data.to,
+					data: data.data
+				});
 		}
 	},
 	createServer: function() {
@@ -150,11 +153,12 @@ Peer.Room = Object.assign(function(roomid, options) {
 			});
 		});
 	},
-	send: function(data) {
+	send: function(data, to) {
 		this.connToServer.send({
 			type: this.MSG_TYPE.CHAT,
 			peerid: this.client.id || this.client._lastServerId,
 			peername: (this.OPTIONS.name || this.id),
+			to: to,
 			data: data
 		});
 	},
@@ -177,11 +181,11 @@ Peer.Room = Object.assign(function(roomid, options) {
 				case _this.MSG_TYPE.BROADCAST: {
 					var displayName = data.peername || data.peerid;
 					_this.list[data.peerid] = displayName;
-					_this.event('data', {
+					_this.event('data', Object.assign({
 						id: ((data.peerid == _this.id) ? 'me' : data.peerid),
 						name: displayName,
 						data: data.data,
-					});
+					}, (data.to ? { private: true } : {})));
 					break;
 				}
 				case _this.MSG_TYPE.DEPARTURE: {

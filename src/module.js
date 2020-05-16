@@ -409,43 +409,8 @@ exports = module.exports = {
 		return peerjs;
 	},
 	genLib: function(cb) {
-		fs.exists(path.resolve(__dirname, 'lib.js'), function(exists) {
-			if (exists)
-				fs.readFile(path.resolve(__dirname, 'lib.js'), 'utf8', function(err, chunk) {
-					(cb || console.log)((module.exports._cache = chunk));
-				});
-			else{
-				https.get('https://raw.githubusercontent.com/peers/peerjs/master/dist/peer.min.js', function(get) {
-					var d = require(path.resolve(__dirname, 'package.json'));
-					var v,
-						body = '';
-					get.on('data', function(chunk) {
-						body += chunk;
-					}).on('end', function() {
-						fs.readFile(path.resolve(__dirname, 'room.js'), 'utf8', function(err, chunk) {
-							https.request({
-								host: 'closure-compiler.appspot.com',
-								path: '/compile',
-								method: 'POST',
-								headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-							}, function(get) {
-								module.exports._cache = '';
-								get.setEncoding('utf8');
-								get.on('data', function(chunk) {
-									module.exports._cache += chunk;
-								}).on('end', function() {
-									fs.writeFile(path.resolve(__dirname, 'lib.js'), (module.exports._cache = module.exports._cache.replace(/\n/g, ' ')), function() {
-										(cb || console.log)(module.exports._cache);
-									});
-								});
-							}).end('output_info=compiled_code&js_code='+encodeURIComponent(body.replace('CLOUD_HOST:"0.peerjs.com"', 'CLOUD_HOST:location.hostname').replace('CLOUD_PORT:9e3', 'CLOUD_PORT:8008').replace(/\/\*(.*)\*\//g, function(s) {
-								v = s.split(':')[1].split(',')[0];
-								return '';
-							})+chunk+"Peer.version={'node-peer': '"+d.version+"', peerjs: '"+v+"'}"));
-						});
-					});
-				});
-			}
+		fs.readFile(path.resolve(__dirname, 'dist', 'peerjs.js'), 'utf8', function(err, chunk) {
+			(cb || console.log)((module.exports._cache = chunk));
 		});
 	}
 }
